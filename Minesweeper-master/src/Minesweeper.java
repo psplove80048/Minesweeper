@@ -24,6 +24,35 @@ public class Minesweeper extends JFrame {
         setTitle(def.getString("title"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        initBar();
+
+        resize();
+        panel = new MyPanel(row, col);
+        panel.startGame();
+        this.add(panel);
+
+        setVisible(true);
+    }
+
+    private void resize() {
+        int d = 51;
+
+        int width = col * d + 4;
+        int height = row * d + 140;
+
+        setBounds((pw - width) / 2, (ph - height) / 2, width, height);
+    }
+
+    private void newGame() {
+        this.remove(panel);
+        resize();
+        panel = new MyPanel(row, col);
+        panel.startGame();
+        this.add(panel);
+        this.setVisible(true);
+    }
+
+    private void initBar() {
         JMenu gameMenu = new JMenu(def.getString("game"));
         gameMenu.setFont(font);
 
@@ -83,7 +112,7 @@ public class Minesweeper extends JFrame {
         gameMenu.add(aboutItem);
         aboutItem.addActionListener(
                 e -> JOptionPane.showMessageDialog(this,
-                        "<html><h1>踩地雷</h1><h2>版本：V 2.1</h2></html>",
+                        "<html><h1>掃雷</h1><h2>版本：V 2.1</h2></html>",
                         "關於", JOptionPane.PLAIN_MESSAGE)
         );
 
@@ -97,35 +126,9 @@ public class Minesweeper extends JFrame {
         JMenuBar bar = new JMenuBar();
         bar.add(gameMenu);
         this.setJMenuBar(bar);
-
-        int d = 51;
-
-        int width = col * d + 4;
-        int height = row * d + 140;
-
-        setBounds((pw - width) / 2, (ph - height) / 2, width, height);
-        panel = new MyPanel(row, col);
-        panel.startGame();
-        this.add(panel);
-
-        setVisible(true);
     }
 
-    	private void newGame() {
-    		this.remove(panel);
-    		int d = 51;
-
-    		int width = col * d + 4;
-    		int height = row * d + 140;
-
-    		setBounds((pw - width) / 2, (ph - height) / 2, width, height);
-    		panel = new MyPanel(row, col);
-    		panel.startGame();
-    		this.add(panel);
-    		this.setVisible(true);
-    	}
-
-    	public static void main(String[] args) {
-    		new Minesweeper();
-    	}
+    public static void main(String[] args) {
+        new Minesweeper();
+    }
 }
