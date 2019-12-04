@@ -37,9 +37,15 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
     }
 
     MyPanel(int row, int col) {
-        this.row = row;
+    	this.row = row;
         this.col = col;
         setBackground(Color.BLACK);
+        initButtons();
+        initBlocks();
+        addMouseListener(this);
+    }
+
+    private void initButtons() {
         label1.setFont(font);
         label1.setBackground(Color.BLACK);
         label1.setEnabled(false);
@@ -54,73 +60,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
         face.addActionListener(
                 e -> {
                     if (over || win || begin) {
-                    	face.setIcon(icon[0]);
-                        remain = sum;
-                        startTime = 0;
-                        endTime = 0;
-                        win = false;
-                        over = false;
-                        begin = false;
-
-                        int count = 0;
-
-                        blocks = new Block[row][col];
-                        if (row == 9 && col == 9) {
-                            sum = 10;
-                        } else if (row == 16 && col == 16) {
-                            sum = 40;
-                        } else if (row == 16 && col == 30) {
-                            sum = 99;
-                        }
-
-                        remain = sum;
-
-                        for (int i = 0; i < row; i++) {
-                            for (int j = 0; j < col; j++) {
-                                blocks[i][j] = new Block(d * j, d * i + h);
-                            }
-                        }
-
-                        while (count < sum) {
-                            int i = (int) (Math.random() * row);
-                            int j = (int) (Math.random() * col);
-                            if (blocks[i][j].category != 9) {
-                                blocks[i][j].category = 9;
-                                count++;
-                            }
-                        }
-
-                        for (int i = 0; i < row; i++) {
-                            for (int j = 0; j < col; j++) {
-                                if (blocks[i][j].category != 9) {
-                                    if (i - 1 >= 0 && j - 1 >= 0 && blocks[i - 1][j - 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (i - 1 >= 0 && blocks[i - 1][j].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (i - 1 >= 0 && j + 1 < col && blocks[i - 1][j + 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (j - 1 >= 0 && blocks[i][j - 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (j + 1 < col && blocks[i][j + 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (i + 1 < row && j - 1 >= 0 && blocks[i + 1][j - 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (i + 1 < row && blocks[i + 1][j].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                    if (i + 1 < row && j + 1 < col && blocks[i + 1][j + 1].category == 9) {
-                                        blocks[i][j].category++;
-                                    }
-                                }
-                            }
-                        }
-                        startGame();
+                        restart();
                     }
                 });
         this.add(face);
@@ -130,6 +70,22 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
         label2.setEnabled(false);
         label2.setBorderPainted(false);
         this.add(label2);
+    }
+
+    private void restart() {
+        face.setIcon(icon[0]);
+        remain = sum;
+        startTime = 0;
+        endTime = 0;
+        win = false;
+        over = false;
+        begin = false;
+
+        initBlocks();
+        startGame();
+    }
+
+    private void initBlocks() {
         int count = 0;
 
         blocks = new Block[row][col];
@@ -188,7 +144,6 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
                 }
             }
         }
-        addMouseListener(this);
     }
 
     void startGame() {
@@ -246,6 +201,89 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
         }
     }
 
+    private void doubleClickFlip(int i, int j) {
+        int number = 0;
+        boolean wrong = false;
+        if (i - 1 >= 0 && j - 1 >= 0 && !blocks[i - 1][j - 1].flip) {
+            if (blocks[i - 1][j - 1].category == 9 && blocks[i - 1][j - 1].flag == 1) {
+                number++;
+            } else if (blocks[i - 1][j - 1].category != 9 && blocks[i - 1][j - 1].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (i - 1 >= 0 && !blocks[i - 1][j].flip) {
+            if (blocks[i - 1][j].category == 9 && blocks[i - 1][j].flag == 1) {
+                number++;
+            } else if (blocks[i - 1][j].category != 9 && blocks[i - 1][j].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (i - 1 >= 0 && j + 1 < col && !blocks[i - 1][j + 1].flip) {
+            if (blocks[i - 1][j + 1].category == 9 && blocks[i - 1][j + 1].flag == 1) {
+                number++;
+            } else if (blocks[i - 1][j + 1].category != 9 && blocks[i - 1][j + 1].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (j - 1 >= 0 && !blocks[i][j - 1].flip) {
+            if (blocks[i][j - 1].category == 9 && blocks[i][j - 1].flag == 1) {
+                number++;
+            } else if (blocks[i][j - 1].category != 9 && blocks[i][j - 1].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (j + 1 < col && !blocks[i][j + 1].flip) {
+            if (blocks[i][j + 1].category == 9 && blocks[i][j + 1].flag == 1) {
+                number++;
+            } else if (blocks[i][j + 1].category != 9 && blocks[i][j + 1].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (i + 1 < row && j - 1 >= 0 && !blocks[i + 1][j - 1].flip) {
+            if (blocks[i + 1][j - 1].category == 9 && blocks[i + 1][j - 1].flag == 1) {
+                number++;
+            } else if (blocks[i + 1][j - 1].category != 9 && blocks[i + 1][j - 1].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (i + 1 < row && !blocks[i + 1][j].flip) {
+            if (blocks[i + 1][j].category == 9 && blocks[i + 1][j].flag == 1) {
+                number++;
+            } else if (blocks[i + 1][j].category != 9 && blocks[i + 1][j].flag == 1) {
+                wrong = true;
+            }
+        }
+        if (i + 1 < row && j + 1 < col && !blocks[i + 1][j + 1].flip) {
+            if (blocks[i + 1][j + 1].category == 9 && blocks[i + 1][j + 1].flag == 1) {
+                number++;
+            } else if (blocks[i + 1][j + 1].category != 9 && blocks[i + 1][j + 1].flag == 1) {
+                wrong = true;
+            }
+        }
+
+        if (wrong) {
+            over = true;
+            begin = false;
+            face.setIcon(icon[2]);
+            flipAll();
+            repaint();
+            return;
+        }
+
+        if (number == blocks[i][j].category) {
+            flipAround(i, j);
+        }
+    }
+
+    private void flipAll() {
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                blocks[i][j].flip = true;
+                blocks[i][j].over = true;
+            }
+        }
+    }
+    
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -265,7 +303,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int i = (e.getY() - h) / d;
+    	int i = (e.getY() - h) / d;
         int j = e.getX() / d;
 
         if ((!over || !win) && i >= 0 && i < row && j >= 0 && j < col && !blocks[i][j].flip) {
@@ -282,12 +320,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
                     over = true;
                     begin = false;
                     face.setIcon(icon[2]);
-                    for (int k = 0; k < row; k++) {
-                        for (int l = 0; l < col; l++) {
-                            blocks[k][l].flip = true;
-                            blocks[k][l].over = true;
-                        }
-                    }
+                    flipAll();
                     repaint();
                 }
             } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -302,82 +335,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
             }
         } else if ((!over || !win) && i >= 0 && i < row && j >= 0 && j < col && e.getClickCount() == 2) {
             if (blocks[i][j].flip && blocks[i][j].category < 9) {
-            	int number = 0;
-                boolean wrong = false;
-                if (i - 1 >= 0 && j - 1 >= 0 && !blocks[i - 1][j - 1].flip) {
-                    if (blocks[i - 1][j - 1].category == 9 && blocks[i - 1][j - 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i - 1][j - 1].category != 9 && blocks[i - 1][j - 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (i - 1 >= 0 && !blocks[i - 1][j].flip) {
-                    if (blocks[i - 1][j].category == 9 && blocks[i - 1][j].flag == 1) {
-                        number++;
-                    } else if (blocks[i - 1][j].category != 9 && blocks[i - 1][j].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (i - 1 >= 0 && j + 1 < col && !blocks[i - 1][j + 1].flip) {
-                    if (blocks[i - 1][j + 1].category == 9 && blocks[i - 1][j + 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i - 1][j + 1].category != 9 && blocks[i - 1][j + 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (j - 1 >= 0 && !blocks[i][j - 1].flip) {
-                    if (blocks[i][j - 1].category == 9 && blocks[i][j - 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i][j - 1].category != 9 && blocks[i][j - 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (j + 1 < col && !blocks[i][j + 1].flip) {
-                    if (blocks[i][j + 1].category == 9 && blocks[i][j + 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i][j + 1].category != 9 && blocks[i][j + 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (i + 1 < row && j - 1 >= 0 && !blocks[i + 1][j - 1].flip) {
-                    if (blocks[i + 1][j - 1].category == 9 && blocks[i + 1][j - 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i + 1][j - 1].category != 9 && blocks[i + 1][j - 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (i + 1 < row && !blocks[i + 1][j].flip) {
-                    if (blocks[i + 1][j].category == 9 && blocks[i + 1][j].flag == 1) {
-                        number++;
-                    } else if (blocks[i + 1][j].category != 9 && blocks[i + 1][j].flag == 1) {
-                        wrong = true;
-                    }
-                }
-                if (i + 1 < row && j + 1 < col && !blocks[i + 1][j + 1].flip) {
-                    if (blocks[i + 1][j + 1].category == 9 && blocks[i + 1][j + 1].flag == 1) {
-                        number++;
-                    } else if (blocks[i + 1][j + 1].category != 9 && blocks[i + 1][j + 1].flag == 1) {
-                        wrong = true;
-                    }
-                }
-
-                if (wrong) {
-                    over = true;
-                    begin = false;
-                    face.setIcon(icon[2]);
-                    for (int k = 0; k < row; k++) {
-                        for (int l = 0; l < col; l++) {
-                            blocks[k][l].flip = true;
-                            blocks[k][l].over = true;
-                        }
-                    }
-                    repaint();
-                    return;
-                }
-
-                if (number == blocks[i][j].category) {
-                    flipAround(i, j);
-                }
+                doubleClickFlip(i, j);
             }
         }
     }
