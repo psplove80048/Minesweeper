@@ -107,6 +107,7 @@ public class Minesweeper extends JFrame {
 
         gameMenu.addSeparator();
 
+        // Create menu options about
         JMenuItem aboutItem = new JMenuItem(def.getString("about"));
         aboutItem.setFont(font);
         gameMenu.add(aboutItem);
@@ -116,6 +117,7 @@ public class Minesweeper extends JFrame {
                         "關於", JOptionPane.PLAIN_MESSAGE)
         );
 
+        // Create menu options exit
         JMenuItem exitItem = new JMenuItem(def.getString("exit"));
         exitItem.setFont(font);
         gameMenu.add(exitItem);
@@ -132,3 +134,4 @@ public class Minesweeper extends JFrame {
         new Minesweeper();
     }
 }
+

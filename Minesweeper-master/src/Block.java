@@ -10,8 +10,10 @@ class Block {
     boolean flip = false;
     boolean over = false;
 
+    // Type of block marked
     int flag = 0;
-
+    
+    // Type of block
     int category = 0;
 
     private static Image nums[] = new Image[9];
@@ -23,9 +25,11 @@ class Block {
             for (int i = 0; i < 9; i++) {
                 nums[i] = ImageIO.read(new File("images/" + i + ".jpg"));
             }
+            // read mine picture
             for (int i = 0; i < 2; i++) {
                 bombs[i] = ImageIO.read(new File("images/bomb" + i + ".jpg"));
             }
+            // read mark picture
             for (int i = 0; i < 3; i++) {
                 flags[i] = ImageIO.read(new File("images/flag" + i + ".jpg"));
             }

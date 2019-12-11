@@ -4,10 +4,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class MyPanel extends JPanel implements MouseListener, Runnable {
+	// set panel row & col
     private int row;
     private int col;
-
+    
+    // total mines
     private int sum = 10;
+    
+    // remain mines
     private int remain = 10;
 
     private long startTime;
@@ -25,7 +29,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
     private final int h = 70;
 
     private Block blocks[][];
-
+    
     private boolean over = false;
     private boolean begin = false;
     private boolean win = false;
@@ -71,7 +75,8 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
         label2.setBorderPainted(false);
         this.add(label2);
     }
-
+    
+    // start new game
     private void restart() {
         face.setIcon(icon[0]);
         remain = sum;
@@ -104,7 +109,8 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
                 blocks[i][j] = new Block(d * j, d * i + h);
             }
         }
-
+        
+        // random produce mine
         while (count < sum) {
             int i = (int) (Math.random() * row);
             int j = (int) (Math.random() * col);
@@ -358,6 +364,7 @@ public class MyPanel extends JPanel implements MouseListener, Runnable {
 
     @Override
     public void run() {
+    	// judge win or not
         while (!over && !win) {
             if (remain == 0) {
                 int count = 0;
